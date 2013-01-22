@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:saxon="http://saxon.sf.net/"
   xmlns:html="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="html">
+  exclude-result-prefixes="html saxon">
   <xsl:param name="todo-text" select="'_TODO'" />
-  <xsl:output method="xml" encoding="UTF-8" indent="yes" />
+  <xsl:output method="html" encoding="UTF-8" indent="yes" saxon:indent-spaces="2" saxon:character-representation="entity" />
   
   <!-- identity template -->
   <xsl:template match="node()|@*">
