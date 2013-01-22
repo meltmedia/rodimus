@@ -5,8 +5,29 @@
   xmlns:html="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="html saxon">
   <xsl:param name="todo-text" select="'_TODO'" />
-  <xsl:output method="html" encoding="UTF-8" indent="yes" saxon:indent-spaces="2" saxon:character-representation="entity" />
+  <xsl:output method="xml" encoding="us-ascii" indent="yes" saxon:indent-spaces="2" saxon:character-representation="decimal" />
   
+  <!-- buffer -->
+  <xsl:template match="/">
+    <xsl:variable name="out1">
+      <xsl:apply-templates select="node()"/>
+    </xsl:variable>
+    <xsl:apply-templates select="$out1" mode="remove-empty"/>
+  </xsl:template>
+  
+  <xsl:template match="node()|@*" mode="remove-empty">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*" mode="remove-empty"/>
+    </xsl:copy>
+  </xsl:template>
+
+  <!-- Eliminate empty nodes that have no attributes -->
+  <xsl:template match="*[count(node()|@*)=0]" priority="2" mode="remove-empty"/>
+
+  <!-- Eliminate elements containing only whitespace -->
+  <xsl:template match="*[not(@*|*) and normalize-space()='']" priority="1" mode="remove-empty"/>
+
+
   <!-- identity template -->
   <xsl:template match="node()|@*">
     <xsl:copy>
@@ -26,11 +47,6 @@
     <xsl:apply-templates select="following-sibling::html:p[1][@class='list_Paragraph']" mode="convert-list"/>
   </xsl:template>
 
-  <!-- Eliminate empty nodes that have no attributes -->
-  <xsl:template match="*[count(node()|@*)=0]" priority="2" />
-
-  <!-- Eliminate elements containing only whitespace -->
-  <xsl:template match="*[not(@*|*) and normalize-space()='']" priority="1" />
 
   <!-- remove whitespace between elements -->
   <xsl:template match="text()[normalize-space()='']" />
@@ -63,14 +79,17 @@
     <xsl:attribute name="{name()}"><xsl:value-of select="$todo-text"/></xsl:attribute>
   </xsl:template>
   
-  <!-- convert p._Section_Header to h1 -->
+  <!-- convert p._Section_Header to h1 and label new sections -->
   <xsl:template match="html:p[@class='_Section_Header']">
+    <xsl:comment>NEW_SECTION</xsl:comment>
+    <xsl:text>
+    </xsl:text>
     <h1><xsl:apply-templates select="node()" /></h1>
   </xsl:template>
   
   <!-- take images out of paragraphs -->
   <xsl:template match="html:p">
-    <xsl:if test="count(element()[not(self::html:img)])&gt;0">
+    <xsl:if test="count(node()[not(self::html:img)])&gt;0">
       <xsl:copy>
         <xsl:apply-templates select="node()[not(self::html:img)]|@*"/>
       </xsl:copy>
