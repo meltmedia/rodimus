@@ -50,7 +50,7 @@
 
   <!-- remove whitespace between elements -->
   <xsl:template match="text()[normalize-space()='']" />
-
+  
   <!-- removes leading and trailing whitespace from text nodes -->
   <xsl:template match="text()[normalize-space()!='']">
     <xsl:copy-of select="normalize-space()" />
@@ -63,16 +63,29 @@
   
   <!-- replace b tags with strong tags -->
   <xsl:template match="html:b">
+    <xsl:text> </xsl:text>
     <strong><xsl:apply-templates select="node()" /></strong>
+    <xsl:text> </xsl:text>
   </xsl:template>
   
   <!-- replace i tags with em tags -->
   <xsl:template match="html:i">
+    <xsl:text> </xsl:text>
     <em><xsl:apply-templates select="node()" /></em>
+    <xsl:text> </xsl:text>
   </xsl:template>
   
   <!-- remove a tags without an href -->
-  <xsl:template match="html:a[not(@href)]" />
+  <xsl:template match="html:a[not(@href)]" priority="1"/>
+  
+  <!-- make links open in new a window and add title tags -->
+<!--
+  <xsl:template match="html:a" priority="2">
+    <xsl:apply-templates select="node()|@*" />
+    <xsl:attribute name="target">_blank</xsl:attribute>
+    <xsl:attribute name="title"><xsl:value-of select="$todo-text"/></xsl:attribute>
+  </xsl:template>
+-->
   
   <!-- strip alt tags and remind user to replace them -->
   <xsl:template match="html:img/@alt">
