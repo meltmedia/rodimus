@@ -1,5 +1,5 @@
 #Rodimus
-##MS Word to usable HTML Conversion
+##A Document Transformer for Word Formats
 meltmedia innovation project by @ctrimble and @jking90
 
 ###Installation
