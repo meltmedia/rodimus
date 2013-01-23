@@ -81,9 +81,8 @@
   <!-- make links open in new a window and add title tags -->
   <xsl:template match="html:a" priority="1">
     <xsl:text> </xsl:text>
-    <a href="{href}" target="_blank" title="{$todo-text}"><xsl:apply-templates select="node()|@*" /></a>
+    <a href="{@href}" target="_blank" title="{$todo-text}"><xsl:apply-templates select="node()" /></a>
     <xsl:text> </xsl:text>
-    <!-- this template is generating extra whitespace inside the anchor tags -->
   </xsl:template>
   
   <!-- strip alt tags and remind user to replace them -->
