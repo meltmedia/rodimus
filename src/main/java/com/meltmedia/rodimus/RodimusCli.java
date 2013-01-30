@@ -86,12 +86,14 @@ public class RodimusCli {
 	StreamSource xhtmlHandlerSource = createStreamSource(RodimusCli.class.getResource("/rodimus.xsl"));
 
     File indexFile = new File(outputDir, "index.html");
-    File assetDir = new File(outputDir, "images");
+    File assetDir = new File(outputDir, "img");
     assetDir.mkdirs();
     ParseContext context = createParseContext(assetDir, verbose);
     TransformerHandler xhtmlHandler = getContentHandler(xhtmlHandlerSource);
     xhtmlHandler.setResult(new StreamResult(indexFile));
-    parseInput(createInputStream(inputFile), xhtmlHandler, context, verbose);
+    PostTikaHandler cleanUp = new PostTikaHandler();
+    cleanUp.setContentHandler(xhtmlHandler);
+    parseInput(createInputStream(inputFile), cleanUp, context, verbose);
     }
     catch( Exception e ) {
       e.printStackTrace(System.err);
@@ -127,7 +129,7 @@ public class RodimusCli {
     
   }
   
-  public static void parseInput(InputStream in, TransformerHandler out, ParseContext context, boolean verbose) {
+  public static void parseInput(InputStream in, ContentHandler out, ParseContext context, boolean verbose) {
     try {
       Tika tika = new Tika();
       Parser parser = tika.getParser();
