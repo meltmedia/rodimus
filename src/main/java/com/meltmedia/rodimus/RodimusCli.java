@@ -18,20 +18,26 @@ package com.meltmedia.rodimus;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Properties;
 
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.poi.util.IOUtils;
 import org.apache.tika.Tika;
 import org.apache.tika.extractor.EmbeddedDocumentExtractor;
@@ -40,10 +46,16 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaMetadataKeys;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
+import org.apache.xml.serializer.Method;
+import org.apache.xml.serializer.OutputPropertiesFactory;
+import org.apache.xml.serializer.ToHTMLStream;
+import org.apache.xml.serializer.ToTextStream;
+import org.apache.xml.serializer.ToXMLStream;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import net.sf.saxon.TransformerFactoryImpl;
+
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
@@ -83,17 +95,7 @@ public class RodimusCli {
 	}
 	outputDir.mkdirs();
 	
-	StreamSource xhtmlHandlerSource = createStreamSource(RodimusCli.class.getResource("/rodimus.xsl"));
-
-    File indexFile = new File(outputDir, "index.html");
-    File assetDir = new File(outputDir, "img");
-    assetDir.mkdirs();
-    ParseContext context = createParseContext(assetDir, verbose);
-    TransformerHandler xhtmlHandler = getContentHandler(xhtmlHandlerSource);
-    xhtmlHandler.setResult(new StreamResult(indexFile));
-    PostTikaHandler cleanUp = new PostTikaHandler();
-    cleanUp.setContentHandler(xhtmlHandler);
-    parseInput(createInputStream(inputFile), cleanUp, context, verbose);
+	transformDocument(inputFile, outputDir, verbose);
     }
     catch( Exception e ) {
       e.printStackTrace(System.err);
@@ -169,4 +171,38 @@ public class RodimusCli {
         throw new Exception("Could not load "+file.getAbsolutePath(), ioe);
     }
     }
+
+  public static void transformDocument(File inputFile, File outputDir, boolean verbose) throws Exception {
+    StreamSource xhtmlHandlerSource = createStreamSource(RodimusCli.class.getResource("/rodimus.xsl"));
+
+    File indexFile = new File(outputDir, "index.html");
+    File assetDir = new File(outputDir, "img");
+    assetDir.mkdirs();
+    
+    // Set up the output buffer.
+    StringBuilderWriter output = new StringBuilderWriter();
+    
+    // Set up the serializer.
+    ToXMLStream serializer = new ToXMLStream();
+    serializer.setOutputProperty(OutputPropertiesFactory.S_KEY_INDENT_AMOUNT,String.valueOf(2));
+    serializer.setOutputProperty(OutputPropertiesFactory.S_KEY_LINE_SEPARATOR,"\n");
+    serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+    serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+    serializer.setWriter(output);
+    
+    // Set up the xhtmlStructure handler.
+    TransformerHandler xhtmlHandler = getContentHandler(xhtmlHandlerSource);
+    xhtmlHandler.setResult(new SAXResult(serializer));
+
+    // build the Tika handler.
+    ParseContext context = createParseContext(assetDir, verbose);
+    PostTikaHandler cleanUp = new PostTikaHandler();
+    cleanUp.setContentHandler(xhtmlHandler);
+    parseInput(createInputStream(inputFile), cleanUp, context, verbose);
+    
+    // Do some regular expression cleanup.
+    String preOutput = output.toString();
+    preOutput = preOutput.replaceAll("/>", " />");
+    FileUtils.write(indexFile, preOutput);
+  }
 }
