@@ -20,3 +20,20 @@ Once you have the project built, you can execute the command line using:
 ```
 java -jar target/rodimus-0.1.0-SNAPSHOT.jar <INPUT_FILE>
 ```
+
+Adding Test Cases
+-----------------
+
+`src/test/resources/testCases` contains a set of example input document and expected output directories.  Simply
+add new input and output documents to this directory to define new test cases.  For example,
+to add a new test for `case-x`, you would add input and output documents like this:
+
+Input:
+```bash
+src/test/resources/testCases/case-x.docx
+```
+Expected Output:
+```bash
+src/test/resources/testCases/case-x/index.html
+src/test/resources/testCases/case-x/img/image1.jpeg
+```
