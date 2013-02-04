@@ -203,6 +203,9 @@ public class RodimusCli {
     // Do some regular expression cleanup.
     String preOutput = output.toString();
     preOutput = preOutput.replaceAll("/>", " />");
+    // TODO: Add all block level elements to this expression.
+    preOutput = preOutput.replaceAll("(</(?:p|img)>)(\\s*)(<(?:p|img))", "$1\n$2$3");
+    
     FileUtils.write(indexFile, preOutput);
   }
 }
