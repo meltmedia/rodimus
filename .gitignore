@@ -3,3 +3,4 @@ target
 .project
 .settings
 TestDocs
+.DS_Store
