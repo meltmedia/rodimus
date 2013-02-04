@@ -45,6 +45,10 @@ public class DocumentTransformationTest {
   
   @Before
   public void beforeTest() throws Exception {
+    if( expectedOutputDir == null || !expectedOutputDir.exists()) {
+      fail("The expected output directory for "+document.getName()+" does not exist.");
+    }
+    
     // clear out the output directory.
     FileUtils.deleteQuietly(actualOutputDir);
     if(!actualOutputDir.mkdir()) {
@@ -87,6 +91,11 @@ public class DocumentTransformationTest {
   public void compareAssets() throws IOException {
     File expectedImages = new File(expectedOutputDir, "img");
     File actualImages = new File(actualOutputDir, "img");
+    
+    if( !expectedImages.exists() || expectedImages.list().length == 0 ) {
+      assertTrue("Images produced when none expected!", !actualImages.exists()||actualImages.list().length == 0);
+      return;
+    }
     
     for( File expected : expectedImages.listFiles(new FileFilter() { @Override public boolean accept(File pathname) { return pathname.isFile(); } }) ) {
       File actual = new File(actualImages, expected.getName());
