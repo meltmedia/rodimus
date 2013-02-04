@@ -203,8 +203,9 @@ public class RodimusCli {
     // Do some regular expression cleanup.
     String preOutput = output.toString();
     preOutput = preOutput.replaceAll("/>", " />");
-    // TODO: Add all block level elements to this expression.
-    preOutput = preOutput.replaceAll("(</(?:p|img)>)(\\s*)(<(?:p|img))", "$1\n$2$3");
+    // TODO: img is in this list, but it is not a block level element.
+    String blockLevel = "(?:address|article|aside|audio|blockquote|canvas|dd|div|dl|fieldset|figcaption|figure|footer|form|h[1-6]|header|hgroup|hr|noscript|ol|output|p|pre|sectop|table|tfoot|ul|video|img)";
+    preOutput = preOutput.replaceAll("(</"+blockLevel+">)(\\s*)(<"+blockLevel+")", "$1$2$2$3");
     
     FileUtils.write(indexFile, preOutput);
   }
