@@ -4,3 +4,4 @@ target
 .settings
 TestDocs
 .DS_Store
+npm-debug.log
