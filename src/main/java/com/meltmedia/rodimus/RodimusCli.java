@@ -61,6 +61,8 @@ import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
 
 public class RodimusCli {
+  public static final String IMAGE_DIR_NAME = "images";
+  public static final String TODO_TEXT = "_TODO";
   public static void main( String... args ) {
     try {
 	final Cli<RodimusInterface> cli = CliFactory.createCli(RodimusInterface.class);
@@ -176,7 +178,7 @@ public class RodimusCli {
     StreamSource xhtmlHandlerSource = createStreamSource(RodimusCli.class.getResource("/rodimus.xsl"));
 
     File indexFile = new File(outputDir, "index.html");
-    File assetDir = new File(outputDir, "img");
+    File assetDir = new File(outputDir, IMAGE_DIR_NAME);
     assetDir.mkdirs();
     
     // Set up the output buffer.
@@ -196,7 +198,7 @@ public class RodimusCli {
 
     // build the Tika handler.
     ParseContext context = createParseContext(assetDir, verbose);
-    PostTikaHandler cleanUp = new PostTikaHandler();
+    PostTikaHandler cleanUp = new PostTikaHandler(IMAGE_DIR_NAME);
     cleanUp.setContentHandler(xhtmlHandler);
     parseInput(createInputStream(inputFile), cleanUp, context, verbose);
     
@@ -206,6 +208,7 @@ public class RodimusCli {
     // TODO: img is in this list, but it is not a block level element.
     String blockLevel = "(?:address|article|aside|audio|blockquote|canvas|dd|div|dl|fieldset|figcaption|figure|footer|form|h[1-6]|header|hgroup|hr|noscript|ol|output|p|pre|sectop|table|tfoot|ul|video|img)";
     preOutput = preOutput.replaceAll("(</"+blockLevel+">)(\\s*)(<"+blockLevel+")", "$1$2$2$3");
+    preOutput = "<!doctype html>\n"+preOutput;
     
     FileUtils.write(indexFile, preOutput);
   }

@@ -34,7 +34,19 @@
       <xsl:apply-templates select="node()|@*" />
     </xsl:copy>
   </xsl:template>
-  
+
+  <!-- add required items to the head. -->
+  <xsl:template match="html:head">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|*[not(self::html:title)]"/>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <title><xsl:value-of select="$todo-text"/></title>
+    </xsl:copy>
+  </xsl:template>
+
+  <!-- remove the old content type. -->
+  <xsl:template match="html:meta[@name='Content-Type']"/>
+
   <!-- convert p.list_Paragraph into li in ul -->
   <xsl:template match="html:p[@class='list_Paragraph' and not(preceding-sibling::html:p[@class='list_Paragraph'])]" priority="2">
     <ul>
