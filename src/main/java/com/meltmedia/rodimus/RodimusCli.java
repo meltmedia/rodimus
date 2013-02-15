@@ -190,8 +190,10 @@ public class RodimusCli {
     serializer.setOutputProperty(OutputPropertiesFactory.S_KEY_LINE_SEPARATOR,"\n");
     serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
     serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+    serializer.setOutputProperty(OutputPropertiesFactory.S_KEY_ENTITIES, "yes");
+    serializer.setOutputProperty(OutputKeys.ENCODING, "US-ASCII");
     serializer.setWriter(output);
-    
+
     // Set up the xhtmlStructure handler.
     TransformerHandler xhtmlHandler = getContentHandler(xhtmlHandlerSource);
     xhtmlHandler.setResult(new SAXResult(serializer));
@@ -209,7 +211,7 @@ public class RodimusCli {
     String blockLevel = "(?:address|article|aside|audio|blockquote|canvas|dd|div|dl|fieldset|figcaption|figure|footer|form|h[1-6]|header|hgroup|hr|noscript|ol|output|p|pre|sectop|table|tfoot|ul|video|img)";
     preOutput = preOutput.replaceAll("(</"+blockLevel+">)(\\s*)(<"+blockLevel+")", "$1$2$2$3");
     preOutput = "<!doctype html>\n"+preOutput;
-    
-    FileUtils.write(indexFile, preOutput);
+
+    FileUtils.write(indexFile, preOutput, "UTF-8");
   }
 }
