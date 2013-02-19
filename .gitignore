@@ -1,2 +1,7 @@
+target
+.classpath
+.project
+.settings
+TestDocs
 .DS_Store
-TestDocs/
+npm-debug.log
