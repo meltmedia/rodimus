@@ -12,21 +12,34 @@
     <xsl:variable name="out1">
       <xsl:apply-templates select="node()" />
     </xsl:variable>
-    <xsl:apply-templates select="$out1" mode="remove-empty" />
+    <xsl:apply-templates select="$out1" mode="post-process" />
   </xsl:template>
   
-  <xsl:template match="@*|node()" mode="remove-empty">
+  <xsl:template match="@*|node()" mode="post-process">
     <xsl:copy>
-      <xsl:apply-templates select="@*|node()" mode="remove-empty" />
+      <xsl:apply-templates select="@*|node()" mode="post-process" />
     </xsl:copy>
   </xsl:template>
 
   <!-- Eliminate empty nodes that have no attributes -->
-  <xsl:template match="*[count(@*|node())=0]" priority="2" mode="remove-empty" />
+  <xsl:template match="*[count(@*|node())=0]" priority="2" mode="post-process" />
 
   <!-- Eliminate elements containing only whitespace -->
-  <xsl:template match="*[not(@*|*) and normalize-space()='']" priority="1" mode="remove-empty" />
+  <xsl:template match="*[not(@*|*) and normalize-space()='']" priority="1" mode="post-process" />
 
+  <!-- Convert URLs to <a>'s -->
+  <xsl:template match="text()[not(ancestor::html:a)]" mode="post-process">
+    <xsl:analyze-string select="." regex="http[s]?://\S*[^.?!:;,&quot;&apos;\s]">
+      <xsl:matching-substring>
+        <a href="{.}" target="_blank" title="{$todo-text}">
+          <xsl:copy-of select="." />
+        </a>
+      </xsl:matching-substring>
+      <xsl:non-matching-substring>
+        <xsl:copy-of select="." />
+      </xsl:non-matching-substring>
+    </xsl:analyze-string>
+  </xsl:template>
 
   <!-- identity template -->
   <xsl:template match="@*|node()">
