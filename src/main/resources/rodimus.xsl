@@ -15,23 +15,23 @@
     <xsl:apply-templates select="$out1" mode="remove-empty" />
   </xsl:template>
   
-  <xsl:template match="node()|@*" mode="remove-empty">
+  <xsl:template match="@*|node()" mode="remove-empty">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*" mode="remove-empty" />
+      <xsl:apply-templates select="@*|node()" mode="remove-empty" />
     </xsl:copy>
   </xsl:template>
 
   <!-- Eliminate empty nodes that have no attributes -->
-  <xsl:template match="*[count(node()|@*)=0]" priority="2" mode="remove-empty" />
+  <xsl:template match="*[count(@*|node())=0]" priority="2" mode="remove-empty" />
 
   <!-- Eliminate elements containing only whitespace -->
   <xsl:template match="*[not(@*|*) and normalize-space()='']" priority="1" mode="remove-empty" />
 
 
   <!-- identity template -->
-  <xsl:template match="node()|@*">
+  <xsl:template match="@*|node()">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*" />
+      <xsl:apply-templates select="@*|node()" />
     </xsl:copy>
   </xsl:template>
 
@@ -58,8 +58,63 @@
     <li><xsl:apply-templates select="node()" /></li>
     <xsl:apply-templates select="following-sibling::html:p[1][@class='list_Paragraph']" mode="convert-list" />
   </xsl:template>
+  
+  <!-- Improve tables -->
+  
+  <!-- Get table and decide whether to build a thead -->
+  <xsl:template match="html:table" priority="2">
+    <xsl:copy>
+      <xsl:apply-templates select="@*" />
+      <xsl:if test="html:tbody[1]/html:tr[1]/html:td[1]/html:p[1]/node()[1][self::html:b]">
+        <xsl:apply-templates select="html:tbody" mode="table-head" />
+      </xsl:if>
+      <xsl:apply-templates select="node()" mode="table-body" />
+    </xsl:copy>
+  </xsl:template>
+  
+  <!-- mode="table-head" transforms all table contents into just the head row -->
+  <xsl:template match="html:tbody" mode="table-head">
+    <thead>
+      <xsl:apply-templates select="@*|node()" mode="table-head" />
+    </thead>
+  </xsl:template>
+  
+  <xsl:template match="html:tr[1][html:td[1]/html:p[1]/node()[1][self::html:b]]" mode="table-head" priority="2">
+    <xsl:copy>
+      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="html:td" mode="table-head" />
+    </xsl:copy>  
+  </xsl:template>
 
-
+  <xsl:template match="html:tr" mode="table-head"/>
+  
+  <xsl:template match="html:td" mode="table-head">
+    <th>
+      <xsl:apply-templates select="@*|html:p/html:b/node()" />
+    </th>
+  </xsl:template>
+  
+  <!-- mode="table-body" removes head row from body and cleans out p tags -->
+  <xsl:template match="html:tbody" mode="table-body">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|html:tr" mode="table-body" />
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="html:tr[1][html:td[1]/html:p[1]/node()[1][self::html:b]]" mode="table-body" priority="2"/>
+    
+  <xsl:template match="html:tr" mode="table-body">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|html:td" mode="table-body" />
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="html:td" mode="table-body">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|html:p/node()" />
+    </xsl:copy>
+  </xsl:template>
+  
   <!-- remove whitespace between elements -->
   <xsl:template match="text()[normalize-space()='']" />
   
@@ -67,12 +122,7 @@
   <xsl:template match="text()[normalize-space()!='']">
     <xsl:copy-of select="normalize-space()" />
   </xsl:template>
-  
-  <!-- remove p tags from table cells -->
-  <xsl:template match="html:*[self::html:td or self::html:th]/html:p">
-    <xsl:apply-templates select="node()" />
-  </xsl:template>
-  
+    
   <!-- replace b tags with strong tags -->
   <xsl:template match="html:b">
     <xsl:text> </xsl:text>
