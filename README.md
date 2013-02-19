@@ -1,25 +1,21 @@
+![Rodimus Prime](https://raw.github.com/meltmedia/rodimus/master/src/test/resources/testCases/image-test/images/image1.jpeg)
+
 #Rodimus
-##A Document Transformer for Word Formats
+
+A Document Transformer for Word Formats
+
 meltmedia innovation project by @ctrimble and @jking90
 
-###Installation
+#Installation
+
 - `wget http://…rodimus-1.0.jar -O rodimus-1.0.jar` (URL to be published)
 - add `alias rodimus='java -jar {path}/rodimus-1.0.jar'` to your profile
 
-###Use
-- `rodimus {input_file}.docx > {output_directory}/`
+#Use
+- `rodimus {input_file}.docx {output_directory}`
 - conversion will run and output an `index.html` file and an `images/` directory
 
-###Dependancies
-- All dependancies are self contained
-
-Rodimus CLI
------------
-
-This project produces an executable jar for Rodimus.
-
-Building this Project
----------------------
+#Building this Project
 
 This project requires Maven 3.0.3 or later to be installed.  Use these steps to checkout and build the project:
 
@@ -36,8 +32,7 @@ Once you have the project built, you can execute the command line using:
 java -jar target/rodimus-0.1.0-SNAPSHOT.jar <INPUT_FILE>
 ```
 
-Adding Test Cases
------------------
+#Adding Test Cases
 
 `src/test/resources/testCases` contains a set of example input document and expected output directories.  Simply
 add new input and output documents to this directory to define new test cases.  For example,
