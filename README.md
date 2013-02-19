@@ -1,4 +1,7 @@
+![Rodimus Prime](https://raw.github.com/meltmedia/rodimus/master/src/test/resources/testCases/image-test/images/image1.jpeg)
+
 #Rodimus
+
 A Document Transformer for Word Formats
 
 meltmedia innovation project by @ctrimble and @jking90
