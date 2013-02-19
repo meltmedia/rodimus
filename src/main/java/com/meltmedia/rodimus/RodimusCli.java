@@ -213,5 +213,10 @@ public class RodimusCli {
     preOutput = "<!doctype html>\n"+preOutput;
 
     FileUtils.write(indexFile, preOutput, "UTF-8");
+    
+    // Clean out images dir if it's empty
+    if (assetDir.list().length == 0) {
+      FileUtils.deleteQuietly(assetDir);
+    }
   }
 }

@@ -89,8 +89,10 @@ public class DocumentTransformationTest {
   
   @Test
   public void compareAssets() throws IOException {
-    File expectedImages = new File(expectedOutputDir, "img");
-    File actualImages = new File(actualOutputDir, "img");
+    File expectedImages = new File(expectedOutputDir, RodimusCli.IMAGE_DIR_NAME);
+    File actualImages = new File(actualOutputDir, RodimusCli.IMAGE_DIR_NAME);
+    
+    assertEquals("Image directories don't match.", expectedImages.exists(), actualImages.exists());
     
     if( !expectedImages.exists() || expectedImages.list().length == 0 ) {
       assertTrue("Images produced when none expected!", !actualImages.exists()||actualImages.list().length == 0);
