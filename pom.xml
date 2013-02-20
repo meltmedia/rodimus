@@ -143,6 +143,15 @@
           <groupId>com.mycila.maven-license-plugin</groupId>
           <artifactId>maven-license-plugin</artifactId>
           <configuration>
+            <includes>
+              <include>src/main/java/**</include>
+              <include>src/test/java/**</include>
+            </includes>
+            <excludes>
+              <exclude>target/**</exclude>
+              <exclude>src/test/resources/testCase/**</exclude>
+              <exclude>src/test/resources/unusedTestCases/**</exclude>
+            </excludes>
           </configuration>
         </plugin>
         <plugin>
