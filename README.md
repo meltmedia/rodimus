@@ -3,6 +3,7 @@
 #Rodimus
 
 A Document Transformer for Word Formats
+[![Build Status](https://secure.travis-ci.org/meltmedia/rodimus.png?branch=master)](https://travis-ci.org/meltmedia/rodimus)
 
 meltmedia innovation project by @ctrimble and @jking90
 
