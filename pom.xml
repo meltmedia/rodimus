@@ -193,9 +193,9 @@
       <plugin>
         <groupId>org.skife.maven</groupId>
         <artifactId>really-executable-jar-maven-plugin</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.5</version>
         <configuration>
-          <programFile>nifty-executable</programFile>
+          <programFile>rodimus</programFile>
         </configuration>
 
         <executions>
