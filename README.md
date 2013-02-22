@@ -9,14 +9,17 @@ meltmedia innovation project by @ctrimble and @jking90
 
 #Installation
 
-Rodimus uses homebrew for installation.  You will need to install meltmedia's homebrew tap to get the rodimus formula.
+This project requires that the following to be preinstalled:
+
+* [Homebrew 0.9.X](http://mxcl.github.com/homebrew/) - You can check your home homebrew version by running `brew -v`.
+* [Maven 3.0.3](http://maven.apache.org) (or greater) - You can check your Maven version by running `mvn -v`.
+
+Once all of the dependencies are installed, you can use Homebrew to install rodimus:
 
 ```bash
 brew tap meltmedia/homebrew-meltmedia
 brew install --HEAD rodimus
 ```
-
-NOTE: This formula requires Maven 3.0.3 or later to be installed.
 
 #Usage
 
