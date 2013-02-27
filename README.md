@@ -4,16 +4,33 @@
 
 ##A Word to HTML5 Document Transformer
 
+[![Build Status](https://secure.travis-ci.org/meltmedia/rodimus.png?branch=master)](https://travis-ci.org/meltmedia/rodimus)
+
 meltmedia innovation project by @ctrimble and @jking90
 
 #Installation
 
-- `wget http://…rodimus-1.0.jar -O rodimus-1.0.jar` (URL to be published)
-- add `alias rodimus='java -jar {path}/rodimus-1.0.jar'` to your profile
+This project requires that the following to be preinstalled:
 
-#Use
-- `rodimus {input_file}.docx {output_directory}`
-- conversion will run and output an `index.html` file and an `images/` directory
+* [Homebrew 0.9.X](http://mxcl.github.com/homebrew/) - You can check your home homebrew version by running `brew -v`.
+* [Maven 3.0.3](http://maven.apache.org) (or greater) - You can check your Maven version by running `mvn -v`.
+
+Once all of the dependencies are installed, you can use Homebrew to install rodimus:
+
+```bash
+brew tap meltmedia/homebrew-meltmedia
+brew install --HEAD rodimus
+```
+
+#Usage
+
+To use rodimus, simply pass in the file to convert and an optional output directory:
+
+```bash
+rodimus <INPUT_FILE> [<OUTPUT_DIR>]
+```
+
+If no output directory is specified, then the output will be placed in a directory based on the name of the input file.
 
 #Building this Project
 
@@ -22,14 +39,13 @@ This project requires Maven 3.0.3 or later to be installed.  Use these steps to 
 ```
 git clone git@github.com:meltmedia/rodimus.git
 cd rodimus
-git checkout -b cli-develop
 mvn clean install
 ```
 
 Once you have the project built, you can execute the command line using:
 
 ```
-java -jar target/rodimus-0.1.0-SNAPSHOT.jar <INPUT_FILE>
+./target/rodimus <INPUT_FILE> [<OUTPUT_DIR>]
 ```
 
 #Adding Test Cases
