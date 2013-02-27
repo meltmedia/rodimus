@@ -2,7 +2,7 @@
 
 #Rodimus
 
-A Document Transformer for Word Formats
+##A Word to HTML5 Document Transformer
 
 meltmedia innovation project by @ctrimble and @jking90
 
