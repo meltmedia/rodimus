@@ -1,0 +1,7 @@
+doctype 5
+html lang:'en', ->
+  head ->
+    title @title
+  body ->
+    h1 @title
+    @body

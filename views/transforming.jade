@@ -1,7 +1,0 @@
-extends layout
-
-block content
-  form(action='/file-upload', enctype='multipart/form-data', method='post')
-    label(for='document') Upload your file to transform
-    input(type='file', name='document')
-    input(type='submit', value='Transform')

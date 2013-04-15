@@ -16,11 +16,11 @@
   },
   "private": true,
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.coffee"
   },
   "dependencies": {
     "express": "3.x",
-    "jade": "*",
+    "coffeecup": "0.3.x",
     "less-middleware": "*"
   },
   "devDependencies": {
