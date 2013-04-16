@@ -6,6 +6,11 @@ express = require('express')
 http = require('http')
 fs = require('fs')
 app = express()
+childProcess = require('child_process')
+
+transform = childProcess.exec("blah", (error, stdout, stderr) ->
+  console.log "exec error: " + error  if error isnt null
+)
 
 # all environments
 app.configure ->
@@ -70,3 +75,13 @@ app.post '/file-upload', (req, res) ->
 # development only
 http.createServer(app).listen app.get('port'), ->
   console.log 'Express server listening on port ' + app.get('port')
+  #######
+var exec = require('child_process').exec, child;
+child = exec('/usr/bin/java -jar ~/Applications/example.jar',
+  function (error, stdout, stderr){
+    console.log('stdout: ' + stdout);
+    console.log('stderr: ' + stderr);
+    if(error !== null){
+      console.log('exec error: ' + error);
+    }
+});
