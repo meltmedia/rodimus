@@ -22,7 +22,6 @@
     "express": "3.x",
     "coffeecup": "0.3.x",
     "less-middleware": "*",
-    "express-zip": "*"
   },
   "devDependencies": {
     "nodemon": "*"

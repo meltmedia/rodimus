@@ -6,7 +6,6 @@ http = require('http')
 fs = require('fs')
 app = express()
 childProcess = require('child_process')
-zip = require('express-zip')
 
 # all environments
 app.configure ->
@@ -29,29 +28,29 @@ app.get '/', (req, res) ->
 
 
 app.get '/t/:uniq_dir', (req, res) ->
+  # paths
   doc = 'public/docs/' + req.params.uniq_dir + '/file.docx'
   new_path = 'public/docs/' + req.params.uniq_dir + '/file'
+  trash_dir = 'public/docs/' + req.params.uniq_dir + '/tmp'
   fs.mkdir './' + new_path
+  fs.mkdir trash_dir
 
   res.render 'transforming',
     title: 'Rodimus is transforming your document.' + req.params.uniq_dir,
     loc: './' + doc
-    
-  transform = childProcess.exec('/usr/bin/java -jar ./rodimus-0.1.0-SNAPSHOT.jar ' + doc + ' ' + new_path, (error, stdout, stderr) ->
+  
+  # execute rodimus
+  transform = childProcess.exec('/usr/bin/java -jar ./rodimus-0.1.0-SNAPSHOT.jar ' + doc + ' ' + new_path, (err, stdout, stderr) ->
 #     if stdout
 #       console.log 'stdout: ' + stdout
 #     if stderr
 #       console.log 'stderr: ' + stderr
-    throw err  if err
+    throw err if err
 
-    fs.unlink doc, ->
-      throw err  if err
+    # move file.docx and delete it
+    fs.rename doc, trash_dir + '/file.docx', ->
+      fs.unlink trash_dir
   )
-
-  res.zip [
-    path: new_path
-    name: new_path + '.zip'
-  ]
 
 # upload handler
 app.post '/file-upload', (req, res) ->
@@ -65,12 +64,10 @@ app.post '/file-upload', (req, res) ->
   fs.mkdir './public/docs/' + uniq_dir
   
   # move the file to the intended location
-  fs.rename tmp_path, target_path, (err) ->
-    console.log err  if err
+  fs.rename tmp_path, target_path, ->
     
     # delete the temporary file
     fs.unlink tmp_path, ->
-      throw err  if err
       
       #res.send('File uploaded to: ' + target_path + ' - ' + req.files.document.size + ' bytes');
       res.redirect '/t/' + uniq_dir
