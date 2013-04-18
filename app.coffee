@@ -1,4 +1,3 @@
-
 ###
 Module dependencies.
 ###
@@ -7,10 +6,7 @@ http = require('http')
 fs = require('fs')
 app = express()
 childProcess = require('child_process')
-
-transform = childProcess.exec("blah", (error, stdout, stderr) ->
-  console.log "exec error: " + error  if error isnt null
-)
+zip = require('express-zip')
 
 # all environments
 app.configure ->
@@ -32,20 +28,30 @@ app.get '/', (req, res) ->
     title: 'Rodimus'
 
 
-app.get '/:uniq_dir', (req, res) ->
+app.get '/t/:uniq_dir', (req, res) ->
+  doc = 'public/docs/' + req.params.uniq_dir + '/file.docx'
+  new_path = 'public/docs/' + req.params.uniq_dir + '/file'
+  fs.mkdir './' + new_path
+
   res.render 'transforming',
-    title: 'Rodimus is transforming your document.',
-    loc: './public/docs/' + req.params.uniq_dir + '/file.docx'
+    title: 'Rodimus is transforming your document.' + req.params.uniq_dir,
+    loc: './' + doc
+    
+  transform = childProcess.exec('/usr/bin/java -jar ./rodimus-0.1.0-SNAPSHOT.jar ' + doc + ' ' + new_path, (error, stdout, stderr) ->
+#     if stdout
+#       console.log 'stdout: ' + stdout
+#     if stderr
+#       console.log 'stderr: ' + stderr
+    throw err  if err
 
-#   res.send 'File uploaded to: public/docs/'
+    fs.unlink doc, ->
+      throw err  if err
+  )
 
-
-#
-#app.post('/file-upload', function(req, res, next) {
-#  console.log(req.body);
-#  console.log(req.files);
-#});
-#
+  res.zip [
+    path: new_path
+    name: new_path + '.zip'
+  ]
 
 # upload handler
 app.post '/file-upload', (req, res) ->
@@ -67,21 +73,9 @@ app.post '/file-upload', (req, res) ->
       throw err  if err
       
       #res.send('File uploaded to: ' + target_path + ' - ' + req.files.document.size + ' bytes');
-      res.redirect '/' + uniq_dir
-
-
-
+      res.redirect '/t/' + uniq_dir
 
 # development only
 http.createServer(app).listen app.get('port'), ->
   console.log 'Express server listening on port ' + app.get('port')
   #######
-var exec = require('child_process').exec, child;
-child = exec('/usr/bin/java -jar ~/Applications/example.jar',
-  function (error, stdout, stderr){
-    console.log('stdout: ' + stdout);
-    console.log('stderr: ' + stderr);
-    if(error !== null){
-      console.log('exec error: ' + error);
-    }
-});
