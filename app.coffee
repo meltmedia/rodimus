@@ -6,6 +6,10 @@ http = require('http')
 fs = require('fs')
 app = express()
 childProcess = require('child_process')
+wrench = require('wrench')
+AdmZip = require('adm-zip')
+
+zip = new AdmZip()
 
 # all environments
 app.configure ->
@@ -26,12 +30,21 @@ app.get '/', (req, res) ->
   res.render 'home',
     title: 'Rodimus'
 
+# done
+app.get '/d/:uniq_dir', (req, res) ->
+  output = '/public/docs/' + req.params.uniq_dir + '/file.zip'
 
+  res.render 'done',
+    title: 'Rodimus has finished transforming your document.'
+    loc: output
+
+# transforming (where the magic happens)
 app.get '/t/:uniq_dir', (req, res) ->
   # paths
-  doc = 'public/docs/' + req.params.uniq_dir + '/file.docx'
-  new_path = 'public/docs/' + req.params.uniq_dir + '/file'
-  trash_dir = 'public/docs/' + req.params.uniq_dir + '/tmp'
+  uniq_dir = req.params.uniq_dir
+  doc = 'public/docs/' + uniq_dir + '/file.docx'
+  new_path = 'public/docs/' + uniq_dir + '/file'
+  trash_dir = 'public/docs/' + uniq_dir + '/tmp'
   fs.mkdir './' + new_path
   fs.mkdir trash_dir
 
@@ -47,9 +60,22 @@ app.get '/t/:uniq_dir', (req, res) ->
 #       console.log 'stderr: ' + stderr
     throw err if err
 
-    # move file.docx and delete it
+    # move file.docx to trash
     fs.rename doc, trash_dir + '/file.docx', ->
-      fs.unlink trash_dir
+
+      # compress output from rodimus
+      zip.addLocalFolder new_path
+      zip.writeZip new_path + '.zip'
+
+      # move rodimus to trash
+      fs.mkdir trash_dir + '/rodimus'
+      fs.rename new_path, trash_dir + '/rodimus', ->
+        
+        # take out the trash
+        wrench.rmdirSyncRecursive trash_dir
+
+        # send user to 'done'
+        res.redirect '/d/' + uniq_dir
   )
 
 # upload handler
@@ -69,7 +95,7 @@ app.post '/file-upload', (req, res) ->
     # delete the temporary file
     fs.unlink tmp_path, ->
       
-      #res.send('File uploaded to: ' + target_path + ' - ' + req.files.document.size + ' bytes');
+      # send user to 'transforming'
       res.redirect '/t/' + uniq_dir
 
 # development only

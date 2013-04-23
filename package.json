@@ -3,7 +3,6 @@
   "description": "A Word to HTML5 Document Transformer",
   "version": "0.0.1",
   "contributors": [
-    "Christian Trimble <christian.tirmble@meltmedia.com>",
     "Jimmy King <jimmy.king@meltmedia.com> (http://jimmyking.me)"
   ],
   "licenses": [{
@@ -21,7 +20,9 @@
   "dependencies": {
     "express": "3.x",
     "coffeecup": "0.3.x",
-    "less-middleware": "*"
+    "less-middleware": "*",
+    "wrench": "*",
+    "adm-zip": "*"
   },
   "devDependencies": {
     "nodemon": "*"
