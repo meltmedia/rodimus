@@ -5,7 +5,7 @@ fs = require('fs')
 app = express()
 
 # File dependencies
-Transformer = require('./transform.coffee')
+Transformer = require('./transformer')
 
 # all environments
 app.configure ->
@@ -19,7 +19,6 @@ app.configure ->
   app.use express.methodOverride()
   app.use app.router
   app.use express.static(__dirname + '/public')
-
 
 # Routes
 app.get '/', (req, res) ->

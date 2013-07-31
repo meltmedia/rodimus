@@ -1,15 +1,12 @@
-###
-Module dependencies.
-###
+# Module dependencies.
 fs = require('fs')
 childProcess = require('child_process')
-wrench = require('wrench')
-AdmZip = require('adm-zip')
 
-zip = new AdmZip()
+# File dependencies
+fileHandler = require('./file_handler')
 
-# Constructor
 class Transformer
+  # Constructor
   constructor: (@uniq_dir) ->
     @initVars
     @render
@@ -43,26 +40,24 @@ class Transformer
     transform = childProcess.exec command, (err, stdout, stderr) ->
       throw err if err
 
-      @fileHandler
+      @rollOut
 
   # Save output and delete input
-  fileHandler: () ->
+  rollOut: () ->
     # move file.docx to trash
-    fs.rename @doc, @trash_dir + '/file.docx', ->
+    fileHandler.move @doc, @trash_dir + '/file.docx'
 
-      # compress output from rodimus
-      zip.addLocalFolder @new_path
-      zip.writeZip @new_path + '.zip'
+    # compress output from rodimus
+    fileHandler.compress @new_path
 
-      # move rodimus to trash
-      fs.mkdir @trash_dir + '/rodimus'
-      fs.rename @new_path, @trash_dir + '/rodimus', ->
+    # move rodimus to trash
+    fileHandler.moveDir @new_path, @trash_dir + '/rodimus'
         
-        # take out the trash
-        wrench.rmdirSyncRecursive @trash_dir
+    # take out the trash
+    fileHandler.removeDir @trash_dir
 
-        # send user to 'done'
-        res.redirect '/d/' + @uniq_dir
+    # send user to 'done'
+    res.redirect '/d/' + @uniq_dir
 
 # Expose
 module.exports = Transformer
