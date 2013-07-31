@@ -22,7 +22,7 @@
     "coffeecup": "0.3.x",
     "less-middleware": "*",
     "wrench": "*",
-    "adm-zip": "*"
+    "adm-zip": "0.4.x"
   },
   "devDependencies": {
     "nodemon": "*"
