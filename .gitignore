@@ -1,6 +1,7 @@
 TestDocs/
 npm-debug.log
 node_modules/
+*.swp
 *.DS_Store
 temp/
 target/

@@ -36,7 +36,10 @@ app.get '/d/:uniq_dir', (req, res) ->
 # transforming (where the magic happens)
 app.get '/t/:uniq_dir', (req, res) ->
   uniq_dir = req.params.uniq_dir
-  rodimus = new Transformer uniq_dir
+  rodimus = new Transformer uniq_dir, ->
+    res.redirect '/d/' + uniq_dir
+  
+#rodimus.render res
 
 # upload handler
 app.post '/file-upload', (req, res) ->

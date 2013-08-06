@@ -7,10 +7,10 @@ fileHandler = require('./file_handler')
 
 class Transformer
   # Constructor
-  constructor: (@uniq_dir) ->
-    @initVars
-    @render
-    @process
+  constructor: (@uniq_dir, @callback) ->
+    @initVars()
+#@render()
+    @transform()
 
   # Init Variables
   initVars: () ->
@@ -25,22 +25,22 @@ class Transformer
     fs.mkdir @trash_dir
 
   # Render 'processing' page
-  render: () ->
+  render: (res) ->
     res.render 'transforming',
       title: 'Rodimus is transforming your document.' + @uniq_dir,
       loc: './' + @doc
 
   # Process file through Rodimus
-  process: () ->
+  transform: () ->
+    self = @
+    
     # Build command
     command = '/usr/bin/java -jar ./rodimus-0.1.0-SNAPSHOT.jar '
     command += @doc + ' ' + @new_path
-
     # Execute command
-    transform = childProcess.exec command, (err, stdout, stderr) ->
+    childProcess.exec command, (err, stdout, stderr) ->
       throw err if err
-
-      @rollOut
+      self.rollOut()
 
   # Save output and delete input
   rollOut: () ->
@@ -56,8 +56,7 @@ class Transformer
     # take out the trash
     fileHandler.removeDir @trash_dir
 
-    # send user to 'done'
-    res.redirect '/d/' + @uniq_dir
+    @callback()
 
 # Expose
 module.exports = Transformer
