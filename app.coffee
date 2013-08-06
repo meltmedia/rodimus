@@ -6,6 +6,7 @@ app = express()
 
 # File dependencies
 Transformer = require('./transformer')
+Uploader = require('./uploader')
 
 # all environments
 app.configure ->
@@ -43,23 +44,8 @@ app.get '/t/:uniq_dir', (req, res) ->
 
 # upload handler
 app.post '/file-upload', (req, res) ->
-  
-  # get the temporary location of the file
-  tmp_path = req.files.document.path
-  uniq_dir = tmp_path.split('/')[2]
-  
-  # set where the file should actually exist
-  target_path = './public/docs/' + uniq_dir + '/file.docx'
-  fs.mkdir './public/docs/' + uniq_dir
-  
-  # move the file to the intended location
-  fs.rename tmp_path, target_path, ->
-    
-    # delete the temporary file
-    fs.unlink tmp_path, ->
-      
-      # send user to 'transforming'
-      res.redirect '/t/' + uniq_dir
+  uploadHandler = new Uploader req, (uniq_dir) -> 
+    res.redirect '/t/' + uniq_dir
 
 # development only
 http.createServer(app).listen app.get('port'), ->

@@ -2,6 +2,7 @@
 fs = require('fs')
 childProcess = require('child_process')
 
+
 # File dependencies
 fileHandler = require('./file_handler')
 
@@ -51,10 +52,13 @@ class Transformer
     fileHandler.compress @new_path
 
     # move rodimus to trash
-    fileHandler.moveDir @new_path, @trash_dir + '/rodimus'
+    fileHandler.move @new_path, @trash_dir + '/rodimus'
         
     # take out the trash
-    fileHandler.removeDir @trash_dir
+    fileHandler.delete @trash_dir
+
+    # expose rodimus output
+    express.static(__dirname + '/public/docs/' + @uniq_dir)
 
     @callback()
 

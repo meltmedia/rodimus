@@ -4,22 +4,27 @@ wrench = require('wrench')
 AdmZip = require('adm-zip')
 
 fileHandler =
-  move: (currentLoc, destinationLoc) ->
-    fs.rename currentLoc, destinationLoc
-  
-  moveDir: (currentLoc, destinationLoc) ->
-    fs.mkdir destinationLoc
-    @move currentLoc, destinationLoc
+  isDir: (path) ->
+    stats = fs.statSync path
+    stats.isDirectory()
+
+  move: (currentPath, newPath) ->
+    if @isDir currentPath
+      fs.mkdir newPath
+    fs.renameSync currentPath, newPath
 
   compress: (dir) ->
     zip = new AdmZip()
     zip.addLocalFolder dir
     zip.writeZip dir + '.zip'
 
-  removeDir: (dir) ->
-    opts =
-      forceDelete: true
-    wrench.rmdirSyncRecursive dir, opts 
+  delete: (path) ->
+    if @isDir path
+      opts =
+        forceDelete: true
+      wrench.rmdirSyncRecursive path, opts
+    else
+      fs.unlinkSync path
 
 # Expose
 module.exports = fileHandler
