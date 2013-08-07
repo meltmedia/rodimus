@@ -1,8 +1,8 @@
 # Module dependencies.
 fs = require('fs')
 childProcess = require('child_process')
-
-
+express = require('express')
+app = express()
 # File dependencies
 fileHandler = require('./file_handler')
 
@@ -10,7 +10,7 @@ class Transformer
   # Constructor
   constructor: (@uniq_dir, @callback) ->
     @initVars()
-#@render()
+    #@render()
     @transform()
 
   # Init Variables
@@ -41,6 +41,7 @@ class Transformer
     # Execute command
     childProcess.exec command, (err, stdout, stderr) ->
       throw err if err
+      console.log stderr if stderr
       self.rollOut()
 
   # Save output and delete input
@@ -55,10 +56,7 @@ class Transformer
     fileHandler.move @new_path, @trash_dir + '/rodimus'
         
     # take out the trash
-    fileHandler.delete @trash_dir
-
-    # expose rodimus output
-    express.static(__dirname + '/public/docs/' + @uniq_dir)
+#fileHandler.delete @trash_dir
 
     @callback()
 

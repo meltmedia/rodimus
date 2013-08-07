@@ -19,7 +19,7 @@ app.configure ->
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use app.router
-  app.use express.static(__dirname + '/public')
+  app.use '/public', express.static('public')
 
 # Routes
 app.get '/', (req, res) ->
