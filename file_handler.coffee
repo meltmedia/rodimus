@@ -1,7 +1,7 @@
 # Module dependencies.
 fs = require('fs')
 wrench = require('wrench')
-Zip = require('adm-zip')
+childProcess = require('child_process')
 
 fileHandler =
   isDir: (path) ->
@@ -16,13 +16,13 @@ fileHandler =
     else
       fs.rename currentPath, newPath, (err) ->
         console.log err if err
-
-  compress: (dir) ->
-    zip = new Zip()
-    zipPath = dir + '.zip'
-
-    zip.addLocalFolder dir, zipPath
-    zip.writeZip zipPath
+  
+  archive: (uniq_dir, callback) ->
+    tarPath = 'public/docs/' + uniq_dir + '/file.tar'
+    command = '/usr/bin/env tar -C ' + __dirname + '/public/docs/' + uniq_dir + ' -cf ' + tarPath + ' file'
+    childProcess.exec command, (err, stdout, stderr) ->
+      throw err if err
+      callback()
 
   delete: (path) ->
     if @isDir path

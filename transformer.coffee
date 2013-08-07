@@ -49,14 +49,13 @@ class Transformer
     # move file.docx to trash
     fileHandler.move @doc, @trash_dir + '/file.docx'
 
-    # compress output from rodimus
-    fileHandler.compress @new_path
-
-    # move rodimus to trash
-    fileHandler.move @new_path, @trash_dir + '/rodimus'
+    # archive output from rodimus
+    fileHandler.archive @uniq_dir, () ->
+      # move rodimus to trash
+      fileHandler.move @new_path, @trash_dir + '/rodimus'
         
     # take out the trash
-#fileHandler.delete @trash_dir
+    fileHandler.delete @trash_dir
 
     @callback()
 
