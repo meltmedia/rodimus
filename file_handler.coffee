@@ -15,14 +15,16 @@ fileHandler =
       wrench.rmdirSyncRecursive currentPath, opts
     else
       fs.rename currentPath, newPath, (err) ->
-        console.log err if err
+        throw err if err
   
-  archive: (uniq_dir, callback) ->
+  archive: (uniq_dir) ->
+    # Build command
+    execPath = __dirname + '/public/docs/' + uniq_dir
     tarPath = 'public/docs/' + uniq_dir + '/file.tar'
-    command = '/usr/bin/env tar -C ' + __dirname + '/public/docs/' + uniq_dir + ' -cf ' + tarPath + ' file'
+    command = '/usr/bin/env tar -C ' + execPath + ' -cf ' + tarPath + ' file'
+    # Execute command
     childProcess.exec command, (err, stdout, stderr) ->
       throw err if err
-      callback()
 
   delete: (path) ->
     if @isDir path

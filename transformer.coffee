@@ -3,6 +3,7 @@ fs = require('fs')
 childProcess = require('child_process')
 express = require('express')
 app = express()
+
 # File dependencies
 fileHandler = require('./file_handler')
 
@@ -41,7 +42,6 @@ class Transformer
     # Execute command
     childProcess.exec command, (err, stdout, stderr) ->
       throw err if err
-      console.log stderr if stderr
       self.rollOut()
 
   # Save output and delete input
@@ -50,9 +50,9 @@ class Transformer
     fileHandler.move @doc, @trash_dir + '/file.docx'
 
     # archive output from rodimus
-    fileHandler.archive @uniq_dir, () ->
-      # move rodimus to trash
-      fileHandler.move @new_path, @trash_dir + '/rodimus'
+    fileHandler.archive @uniq_dir
+    # move rodimus to trash
+    fileHandler.move @new_path, @trash_dir + '/rodimus'
         
     # take out the trash
     fileHandler.delete @trash_dir
