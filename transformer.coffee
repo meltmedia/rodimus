@@ -37,7 +37,7 @@ class Transformer
     self = @
     
     # Build command
-    command = '/usr/bin/java -jar ./rodimus-0.1.0-SNAPSHOT.jar '
+    command = '/usr/bin/java -jar ./bin/rodimus-0.1.0-SNAPSHOT.jar '
     command += @doc + ' ' + @new_path
     # Execute command
     childProcess.exec command, (err, stdout, stderr) ->

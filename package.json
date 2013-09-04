@@ -5,10 +5,15 @@
   "contributors": [
     "Jimmy King <jimmy.king@meltmedia.com> (http://jimmyking.me)"
   ],
-  "licenses": [{
-    "type": "Apache",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  }],
+  "engines": {
+    "node": "0.8.x"
+  },
+  "licenses": [
+    {
+      "type": "Apache",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/meltmedia/rodimus.git"
@@ -25,6 +30,14 @@
     "adm-zip": "0.4.x"
   },
   "devDependencies": {
-    "nodemon": "*"
+    "nodemon": "*",
+    "mocha": "~1.12.1",
+    "chai": "~1.7.2",
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.9",
+    "grunt-node-version": "~0.4.1",
+    "grunt-exec": "~0.4.2",
+    "grunt-groc": "~0.3.0",
+    "grunt-mocha": "~0.4.1"
   }
 }
