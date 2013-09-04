@@ -38,6 +38,7 @@
     "grunt-node-version": "~0.4.1",
     "grunt-exec": "~0.4.2",
     "grunt-groc": "~0.3.0",
-    "grunt-mocha": "~0.4.1"
+    "grunt-mocha": "~0.4.1",
+    "grunt-contrib-coffee": "~0.7.0"
   }
 }
