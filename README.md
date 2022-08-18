@@ -6,7 +6,7 @@ A Word to HTML5 Document Transformer
 
 [![Build Status](https://secure.travis-ci.org/meltmedia/rodimus.png?branch=master)](https://travis-ci.org/meltmedia/rodimus)
 
-meltmedia innovation project by @ctrimble and @jking90
+meltmedia innovation project by @ctrimble and @10xLaCroixDrinker
 
 #Installation
 
